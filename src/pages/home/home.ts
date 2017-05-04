@@ -1,32 +1,44 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+// Actions
+import { INCREMENT, DECREMENT } from '../../store/categories.reducer'
 
 // Models
-import { Item } from '../../models/item.model';
-import { Items } from '../../providers/items.provider';
+import { AppState } from '../../models/appstate.model';
+import { Category } from '../../models/category.model';
 
 // Providers
-import { Day } from '../../models/day.model';
+import { Categories } from '../../providers/categories.provider';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
-  categories: Item[];
+export class HomePage implements OnInit {
 
-  constructor(public items: Items,
-    public navCtrl: NavController) {
-      this.categories = items.items;
-    }
+  public categories: Category[];
 
-  decrement(item: Item) {
-    if (item.amount > 0) {
-      item.amount--;
-    }
+  constructor(private _store: Store<AppState>, categories: Categories) {
+
+    // Subscribe to feature store updates
+    _store.subscribe(state => {
+      this.categories = state.categories;
+    });
+
+    // Load initial categories data
+    categories.load();
   }
 
-  increment(item: Item) {
-    item.amount++;
+  ngOnInit() {
+
+  }
+
+  decrement(category: Category) {
+    this._store.dispatch({ type: DECREMENT, payload: category });
+  }
+
+  increment(category: Category) {
+    this._store.dispatch({ type: INCREMENT, payload: category});
   }
 }

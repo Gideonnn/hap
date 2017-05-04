@@ -1,12 +1,19 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { StoreModule } from '@ngrx/store';
 
-import { Items } from '../providers/items.provider';
+import { MyApp } from './app.component';
+
+// Pages
+import { HomePage } from '../pages/home/home';
+
+// Store
+import { categories } from '../store/categories.reducer';
+
+// Providers
+import { Categories } from '../providers/categories.provider';
 
 export const pages = [
   MyApp,
@@ -25,14 +32,15 @@ export const providers = [
   StatusBar,
   SplashScreen,
   HomePage,
-  Items,
+  Categories,
   { provide: ErrorHandler, useClass: IonicErrorHandler }
 ];
 
 @NgModule({
   declarations: declarations,
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    StoreModule.provideStore({ categories })
   ],
   bootstrap: [IonicApp],
   entryComponents: entryComponents,
